@@ -16,11 +16,19 @@ public class UI {
     private DefaultListModel<String> leftListModel;
     private DefaultListModel<String> rightListModel;
     private JTextField searchField;
+    private static final int MAX_ITEMS = 6;
 
-    public void setLeftListModel(List<String> leftListModel){
-        
+    public void setLeftListModel(List<String> leftListModel) {
+        this.leftListModel.clear();
+        for (String item : leftListModel)
+            this.leftListModel.addElement(item);
     }
 
+    public void setRightListModel(List<String> rightListModel) {
+        this.rightListModel.clear();
+        for (String item : rightListModel)
+            this.rightListModel.addElement(item);
+    }
 
     public void render() {
         JFrame frame = new JFrame("Beast App");
@@ -122,7 +130,13 @@ public class UI {
         // Part 9: Submit Button
 
         JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(e -> System.out.println("Submit"));
+        submitButton.addActionListener(e -> {
+            if (rightListModel.size() < MAX_ITEMS) {
+                JOptionPane.showMessageDialog(null, "You must select at least 6 items");
+            } else {
+                System.out.println("Submit");
+            }
+        });
         rightPanel.add(submitButton, BorderLayout.SOUTH);
 
         // Apply cool styles
@@ -134,6 +148,13 @@ public class UI {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public void renderLater(Runnable runnable) {
+        SwingUtilities.invokeLater(() -> {
+            render();
+            runnable.run();
+        });
     }
 
     public void renderLater() {

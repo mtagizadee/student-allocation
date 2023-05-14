@@ -27,9 +27,12 @@ public class MessageListener extends Thread {
 
         Student student = db.getStudent(dto.studentId);
         ArrayList<Destination> preferences = new ArrayList<Destination>();
-        for (int i = 0; i < dto.preferences.size(); i++) preferences.add(db.getDestination(dto.preferences.get(i)));
 
+        for (int i = 0; i < dto.preferences.size(); i++) preferences.add(db.getDestination(dto.preferences.get(i)));
         student.setPreferences(preferences);
+
+        // save student in the database for the next requests
+        db.saveStudent(student);
         return student;
     }
 
@@ -47,13 +50,15 @@ public class MessageListener extends Thread {
                         GetOptimizationDto dto = (GetOptimizationDto) Helpers.receiveDto(client);
 
                         // optimize the message
-                        Destination optimizedPreference = this.ga.optimize(this.proceedDto(dto));
+                        if (dto == null) continue;
+
+                        // optimize the students preferences
+                        Student student = this.proceedDto(dto);
+                        Destination optimizedPreference = this.ga.optimize(student);
 
                         // Send the message to all clients
-                        for (Socket otherClient : this.server.getClients()) {
-                            if (client.equals(otherClient)) continue;
+                        for (Socket otherClient : this.server.getClients())
                             Helpers.sendDto(otherClient, new GetOptimizationResponseDto(dto.studentId,  optimizedPreference.getId()));
-                        }
                     }
                 }
             } catch (Exception e) {

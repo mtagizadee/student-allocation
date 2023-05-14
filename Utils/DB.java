@@ -81,6 +81,26 @@ public class DB {
         return this.DESTINATIONS_COUNT;
     }
 
+    public void saveStudent(Student student) {
+        // find the student with the same id and replace it
+        for (int i = 0; i < this.STUDENTS_COUNT; i++) {
+            if (this.students.get(i).getId() == student.getId()) {
+                this.students.set(i, student);
+                break;
+            }
+        }
+    }
+
+    public void saveDestination(Destination destination) {
+        // find the destination with the same id and replace it
+        for (int i = 0; i < this.DESTINATIONS_COUNT; i++) {
+            if (this.destinations.get(i).getId() == destination.getId()) {
+                this.destinations.set(i, destination);
+                break;
+            }
+        }
+    }
+
     public void displayStudents() {
         for (Student student : this.students) {
             System.out.println(student);

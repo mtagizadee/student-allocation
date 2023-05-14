@@ -57,6 +57,10 @@ public class Helpers {
         for (Destination preference : preferences) {
             if (!preference.isFull()) {
                 preference.addStudent();
+
+                // save destination in the database for the next requests
+                db.saveDestination(preference);
+
                 return preference;
             }
         }
