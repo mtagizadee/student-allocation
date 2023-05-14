@@ -1,6 +1,7 @@
 package Client;
 
 import Dto.GetInitDataResponseDto;
+import Dto.GetOptimizationResponseDto;
 import Entities.Destination;
 import Entities.Student;
 import Utils.Config;
@@ -25,15 +26,12 @@ public class MessageHandler extends Thread {
 
                 // if there is no message, continue.
                 if (this.socket.getInputStream().available() <= 0) continue;
-
                 Object dto = Helpers.receiveDto(this.socket);
 
-                if (dto instanceof GetInitDataResponseDto) {
+                if (dto instanceof GetInitDataResponseDto)
                     this.handleInitDataResponse((GetInitDataResponseDto) dto);
-                    continue;
-                }
-
-                System.out.println(dto);
+                else if (dto instanceof GetOptimizationResponseDto)
+                    this.handleOptimizationResponse((GetOptimizationResponseDto) dto);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -48,5 +46,9 @@ public class MessageHandler extends Thread {
         // copy destinations
         this.client.destinations = new ArrayList<Destination>();
         this.client.destinations.addAll(getInitDataResponseDto.destinations);
+    }
+
+    private void handleOptimizationResponse(GetOptimizationResponseDto getOptimizationResponseDto) {
+        this.client.optimizedPreference = getOptimizationResponseDto.destinationId;
     }
 }

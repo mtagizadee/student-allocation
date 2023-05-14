@@ -48,6 +48,22 @@ public class DB {
         }
     }
 
+    public Student getStudent(int studentId) {
+        return this.students
+                .stream()
+                .findFirst()
+                .filter(student -> student.getId() == studentId)
+                .orElse(null);
+    }
+
+    public Destination getDestination(int destinationId) {
+        return this.destinations
+                .stream()
+                .findFirst()
+                .filter(destination -> destination.getId() == destinationId)
+                .orElse(null);
+    }
+
 
     public List<Destination> getDestinations() {
         return this.destinations;

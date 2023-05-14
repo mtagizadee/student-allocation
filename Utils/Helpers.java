@@ -1,7 +1,12 @@
 package Utils;
 
+import Entities.Destination;
+import Entities.Student;
+import GA.Population;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.Random;
 
 public class Helpers {
@@ -9,7 +14,7 @@ public class Helpers {
     public static Object receiveDto(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
-            byte[] receivedBytes = new byte[Config.BUFFER_SIZE];
+            byte[] receivedBytes = new byte[Config.BUFFER_SIZE * 10];
             int bytesRead = inputStream.read(receivedBytes);
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(receivedBytes, 0, bytesRead);
@@ -45,5 +50,17 @@ public class Helpers {
 
     public static DB getDb() { // encapsulate Utils.DB
         return db;
+    }
+
+    public static Destination result(Population population, Student student) {
+        List<Destination> preferences = student.getPreferences();
+        for (Destination preference : preferences) {
+            if (!preference.isFull()) {
+                preference.addStudent();
+                return preference;
+            }
+        }
+
+        return null;
     }
 }

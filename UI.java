@@ -1,89 +1,50 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UI {
-    private static final int MAX_ITEMS = 6;
-    private static JList<String> leftList, rightList;
-    private static DefaultListModel<String> leftModel, rightModel;
-    private static JTextField searchTextField;
+    private DefaultListModel<String> leftListModel;
+    private DefaultListModel<String> rightListModel;
+    private JTextField searchField;
 
-    public static void start() {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    public void setLeftListModel(List<String> leftListModel){
+        
     }
 
-    private static void createAndShowGUI() {
+
+    public void render() {
         JFrame frame = new JFrame("Beast App");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.getContentPane().setLayout(new BorderLayout());
 
         // Part 1: Navbar
-        JPanel navbar = new JPanel();
-        navbar.setLayout(new BorderLayout());
-        JLabel appTitle = new JLabel("Beast App");
-        appTitle.setHorizontalAlignment(SwingConstants.RIGHT);
-        navbar.add(appTitle, BorderLayout.EAST);
-        // Add student name and profile image here
-        frame.add(navbar, BorderLayout.NORTH);
+        JToolBar navbar = new JToolBar();
+        navbar.setFloatable(false);
+        navbar.add(new JLabel("Student Name - Student Image"));
+        navbar.add(Box.createHorizontalGlue());
+        navbar.add(new JLabel("Beast App"));
+        frame.getContentPane().add(navbar, BorderLayout.NORTH);
 
-        // Part 2: Bottom Panel
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout());
+        // Part 2: Bottom
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        frame.getContentPane().add(bottomPanel, BorderLayout.CENTER);
 
         // Part 3: Search Input
-        searchTextField = new JTextField();
-        bottomPanel.add(searchTextField, BorderLayout.NORTH);
-
-        // Part 4: Two lists in the middle
-        leftModel = new DefaultListModel<>();
-        leftModel.addElement("Item 1");
-        leftModel.addElement("Item 2");
-        leftModel.addElement("Item 3");
-        leftModel.addElement("Item 4");
-        leftList = new JList<>(leftModel);
-        leftList.setDragEnabled(true);
-        leftList.setTransferHandler(new ListItemTransferHandler());
-        leftList.setCellRenderer(new ListItemRenderer());
-        JScrollPane leftScrollPane = new JScrollPane(leftList);
-
-        rightModel = new DefaultListModel<>();
-        rightList = new JList<>(rightModel);
-        rightList.setDragEnabled(true);
-        rightList.setTransferHandler(new ListItemTransferHandler());
-        rightList.setCellRenderer(new ListItemRenderer());
-        JScrollPane rightScrollPane = new JScrollPane(rightList);
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
-        splitPane.setDividerLocation(200);
-        bottomPanel.add(splitPane, BorderLayout.CENTER);
-
-        // Part 7: Right Panel
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());
-
-        // Part 8: Arrow up with a label
-        JPanel arrowPanel = new JPanel();
-        arrowPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel arrowLabel = new JLabel("↑ Most Priority");
-        arrowPanel.add(arrowLabel);
-        rightPanel.add(arrowPanel, BorderLayout.NORTH);
-
-        // Part 9: Submit Button
-        JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(e -> System.out.println("Submit"));
-        rightPanel.add(submitButton, BorderLayout.SOUTH);
-
-        bottomPanel.add(rightPanel, BorderLayout.EAST);
-
-        frame.add(bottomPanel, BorderLayout.CENTER);
+        searchField = new JTextField();
+        bottomPanel.add(searchField, BorderLayout.NORTH);
 
         // Search functionality
-        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 search();
@@ -98,117 +59,171 @@ public class UI {
             public void changedUpdate(DocumentEvent e) {
                 search();
             }
+        });
 
-            private void search() {
-                String searchText = searchTextField.getText().toLowerCase();
-                if (searchText.isEmpty()) {
-                    leftList.setModel(leftModel);
-                } else {
-                    DefaultListModel<String> filteredModel = new DefaultListModel<>();
-                    for (int i = 0; i < leftModel.getSize(); i++) {
-                        String item = leftModel.getElementAt(i);
-                        if (item.toLowerCase().contains(searchText)) {
-                            filteredModel.addElement(item);
-                        }
+        // Part 5: First list
+        leftListModel = new DefaultListModel<>();
+        JList<String> leftList = new JList<>(leftListModel);
+        leftList.setDragEnabled(true);
+        leftList.setTransferHandler(new ListItemTransferHandler());
+        leftList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedIndex = leftList.getSelectedIndex();
+                    if (rightListModel.size() < 6) {
+                        rightListModel.addElement(leftListModel.get(selectedIndex));
+                        leftListModel.remove(selectedIndex);
                     }
-                    leftList.setModel(filteredModel);
                 }
             }
         });
 
-        // Double-click event for rightList
+        // Part 6: Second list
+        rightListModel = new DefaultListModel<>();
+        JList<String> rightList = new JList<>(rightListModel);
+        rightList.setDragEnabled(true);
+        rightList.setDropMode(DropMode.INSERT);
+        rightList.setTransferHandler(new ListItemTransferHandler() {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                if (!support.isDataFlavorSupported(DataFlavor.stringFlavor))
+                    return false;
+
+                JList<?> target = (JList<?>) support.getComponent();
+                if (target.getModel().getSize() >= 6)
+                    return false;
+
+                return true;
+            }
+        });
         rightList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int index = rightList.locationToIndex(e.getPoint());
-                    leftModel.addElement(rightModel.getElementAt(index));
-                    rightModel.remove(index);
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedIndex = rightList.getSelectedIndex();
+                    leftListModel.addElement(rightListModel.get(selectedIndex));
+                    rightListModel.remove(selectedIndex);
                 }
             }
         });
+
+        // Part 4: Two lists
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(leftList),
+                new JScrollPane(rightList));
+        bottomPanel.add(splitPane, BorderLayout.CENTER);
+
+        // Part 7: On the right
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(rightPanel, BorderLayout.EAST);
+
+        // Part 8: Arrow up with a label
+        JLabel arrowLabel = new JLabel("↑ Most Priority");
+        rightPanel.add(arrowLabel, BorderLayout.NORTH);
+
+        // Part 9: Submit Button
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> System.out.println("Submit"));
+        rightPanel.add(submitButton, BorderLayout.SOUTH);
+
+        // Apply cool styles
+        UIManager.put("Button.font", new Font("Tahoma", Font.BOLD, 12));
+        UIManager.put("Label.font", new Font("Tahoma", Font.BOLD, 12));
+        UIManager.put("TextField.font", new Font("Tahoma", Font.PLAIN, 12));
+        UIManager.put("List.font", new Font("Tahoma", Font.PLAIN, 12));
 
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    private static class ListItemTransferHandler extends TransferHandler {
-        @Override
-        public boolean canImport(TransferHandler.TransferSupport info) {
-            return info.isDataFlavorSupported(DataFlavor.stringFlavor);
+    public void renderLater() {
+        SwingUtilities.invokeLater(() -> render());
+    }
+
+    private void search() {
+        String searchQuery = searchField.getText().toLowerCase();
+        List<String> leftListItems = new ArrayList<>();
+        List<String> rightListItems = new ArrayList<>();
+
+        for (int i = 0; i < leftListModel.size(); i++) {
+            leftListItems.add(leftListModel.get(i));
+        }
+        for (int i = 0; i < rightListModel.size(); i++) {
+            rightListItems.add(rightListModel.get(i));
         }
 
+        List<String> filteredLeftListItems = leftListItems.stream()
+                .filter(item -> item.toLowerCase().contains(searchQuery))
+                .collect(Collectors.toList());
+
+        List<String> filteredRightListItems = rightListItems.stream()
+                .filter(item -> item.toLowerCase().contains(searchQuery))
+                .collect(Collectors.toList());
+
+        leftListModel.clear();
+        rightListModel.clear();
+
+        for (String item : filteredLeftListItems) {
+            leftListModel.addElement(item);
+        }
+        for (String item : filteredRightListItems) {
+            rightListModel.addElement(item);
+        }
+    }
+
+    private static class ListItemTransferHandler extends TransferHandler {
         @Override
-        public boolean importData(TransferHandler.TransferSupport info) {
-            if (!info.isDrop()) {
-                return false;
-            }
-
-            if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                return false;
-            }
-
-            JList.DropLocation dl = (JList.DropLocation) info.getDropLocation();
-            int index = dl.getIndex();
-            String data;
-
-            try {
-                data = (String) info.getTransferable().getTransferData(DataFlavor.stringFlavor);
-            } catch (Exception e) {
-                return false;
-            }
-
-            JList<String> list = (JList<String>) info.getComponent();
-            DefaultListModel<String> model = (DefaultListModel<String>) list.getModel();
-
-            if (list == rightList) {
-                if (model.size() >= MAX_ITEMS) {
-                    JOptionPane.showMessageDialog(null, "Can't add more than 6 items");
-                    return false;
-                }
-
-                if (index == -1) {
-                    model.addElement(data);
-                } else {
-                    model.add(index, data);
-                }
-
-                leftModel.removeElement(data);
-            } else if (list == leftList) {
-                if (index == -1) {
-                    model.addElement(data);
-                } else {
-                    model.add(index, data);
-                }
-
-                rightModel.removeElement(data);
-            }
-
-            return true;
+        public int getSourceActions(JComponent c) {
+            return MOVE;
         }
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            JList<String> list = (JList<String>) c;
-            String value = list.getSelectedValue();
-            return new StringSelection(value);
+            JList<?> list = (JList<?>) c;
+            return new StringSelection(list.getSelectedValue().toString());
         }
 
         @Override
-        public int getSourceActions(JComponent c) {
-            return TransferHandler.MOVE;
+        public boolean canImport(TransferSupport support) {
+            if (!support.isDataFlavorSupported(DataFlavor.stringFlavor))
+                return false;
+            return true;
         }
-    }
 
-    private static class ListItemRenderer extends DefaultListCellRenderer {
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                                                      boolean cellHasFocus) {
-            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (list == rightList && rightModel.size() == MAX_ITEMS) {
-                label.setForeground(Color.GRAY);
+        public boolean importData(TransferSupport support) {
+            if (!canImport(support)) {
+                return false;
             }
-            return label;
+
+            JList<?> target = (JList<?>) support.getComponent();
+            JList.DropLocation dropLocation = (JList.DropLocation) support.getDropLocation();
+            DefaultListModel<String> listModel = (DefaultListModel<String>) target.getModel();
+            int index = dropLocation.getIndex();
+
+            try {
+                String data = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                if (index == -1) {
+                    listModel.addElement(data);
+                } else {
+                    listModel.add(index, data);
+                }
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void exportDone(JComponent source, Transferable data, int action) {
+            if (action == MOVE) {
+                JList<?> list = (JList<?>) source;
+                int selectedIndex = list.getSelectedIndex();
+                DefaultListModel<?> listModel = (DefaultListModel<?>) list.getModel();
+                listModel.remove(selectedIndex != -1 ? selectedIndex : listModel.size() - 1);
+            }
         }
     }
 }

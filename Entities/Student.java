@@ -37,6 +37,11 @@ public class Student implements Serializable {
         return -1;
     }
 
+    public void setPreferences(List<Destination> preferences) {
+        this.preferences.clear();
+        this.preferences.addAll(preferences);
+    }
+
     public String toString() {
         return this.name;
     }

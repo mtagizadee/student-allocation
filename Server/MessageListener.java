@@ -1,15 +1,36 @@
 package Server;
 
+import Dto.GetInitDataResponseDto;
+import Dto.GetOptimizationDto;
+import Dto.GetOptimizationResponseDto;
+import Entities.Destination;
+import Entities.Student;
+import GA.GeneticAlgorithm;
 import Utils.Config;
+import Utils.DB;
 import Utils.Helpers;
 
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class MessageListener extends Thread {
     private final Server server;
+    private GeneticAlgorithm ga;
 
     public MessageListener(Server server) {
         this.server = server;
+        this.ga = new GeneticAlgorithm();
+    }
+
+    private Student proceedDto(GetOptimizationDto dto) {
+        DB db = Helpers.getDb();
+
+        Student student = db.getStudent(dto.studentId);
+        ArrayList<Destination> preferences = new ArrayList<Destination>();
+        for (int i = 0; i < dto.preferences.size(); i++) preferences.add(db.getDestination(dto.preferences.get(i)));
+
+        student.setPreferences(preferences);
+        return student;
     }
 
     public void run() {
@@ -23,14 +44,15 @@ public class MessageListener extends Thread {
                 for (Socket client : this.server.getClients()) {
                     if (client.getInputStream().available() > 0) {
                         // Receive the message.
-                        Object dto =  Helpers.receiveDto(client);
+                        GetOptimizationDto dto = (GetOptimizationDto) Helpers.receiveDto(client);
 
                         // optimize the message
+                        Destination optimizedPreference = this.ga.optimize(this.proceedDto(dto));
 
                         // Send the message to all clients
                         for (Socket otherClient : this.server.getClients()) {
                             if (client.equals(otherClient)) continue;
-                            Helpers.sendDto(otherClient, dto);
+                            Helpers.sendDto(otherClient, new GetOptimizationResponseDto(dto.studentId,  optimizedPreference.getId()));
                         }
                     }
                 }
