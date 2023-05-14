@@ -1,0 +1,7 @@
+/out
+
+.idea
+.vscode
+
+.DS_Store
+middle-project.iml

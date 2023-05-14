@@ -1,3 +1,5 @@
+package Server;
+
 import Utils.Config;
 import Utils.Helpers;
 
@@ -11,7 +13,7 @@ public class MessageListener extends Thread {
     }
 
     public void run() {
-        System.out.println("Server is listening on " + this.server.getFullAddress());
+        System.out.println("Server.Server is listening on " + this.server.getFullAddress());
 
         while (true) {
             try {

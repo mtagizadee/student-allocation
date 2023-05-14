@@ -9,6 +9,7 @@ import java.util.List;
 public class GetOptimizationDto implements Serializable {
     public final int studentId;
     public final List<Destination> preferences;
+    public final Event event = Event.GetOptimization;
 
     public GetOptimizationDto(int studentId, ArrayList<Destination> preferences) {
         this.studentId = studentId;

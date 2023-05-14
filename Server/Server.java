@@ -1,3 +1,5 @@
+package Server;
+
 import Utils.Config;
 
 import java.net.InetAddress;
