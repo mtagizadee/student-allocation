@@ -13,15 +13,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UI {
-    private DefaultListModel<String> leftListModel;
-    private DefaultListModel<String> rightListModel;
+    private DefaultListModel<String> leftListModel = new DefaultListModel<>();
+    private DefaultListModel<String> rightListModel = new DefaultListModel<>();
     private JTextField searchField;
     private static final int MAX_ITEMS = 6;
 
     public void setLeftListModel(List<String> leftListModel) {
-        this.leftListModel.clear();
-        for (String item : leftListModel)
+        for (String item : leftListModel) {
+            System.out.println(item);
             this.leftListModel.addElement(item);
+        }
+
     }
 
     public void setRightListModel(List<String> rightListModel) {
@@ -70,7 +72,6 @@ public class UI {
         });
 
         // Part 5: First list
-        leftListModel = new DefaultListModel<>();
         JList<String> leftList = new JList<>(leftListModel);
         leftList.setDragEnabled(true);
         leftList.setTransferHandler(new ListItemTransferHandler());
@@ -104,6 +105,7 @@ public class UI {
                 return true;
             }
         });
+
         rightList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 if (evt.getClickCount() == 2) {

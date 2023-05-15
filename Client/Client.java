@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.util.*;
 
 public class Client {
+    public DataReceivedListener dataReceivedListener;
+    public OptimizationReceivedListener optimizationReceivedListener;
     private Socket socket;
     public List<Student> students;
     public List<Destination> destinations;
@@ -64,5 +66,23 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void addOnDataReceivedListener(Runnable runnable) {
+        this.dataReceivedListener = new DataReceivedListener() {
+            @Override
+            public void onDataReceived() {
+                runnable.run();
+            }
+        };
+    }
+
+    public void addOnOptimizationReceivedListener(Runnable runnable) {
+        this.optimizationReceivedListener = new OptimizationReceivedListener() {
+            @Override
+            public void onOptimizationReceived() {
+                runnable.run();
+            }
+        };
     }
 }

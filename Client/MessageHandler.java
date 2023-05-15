@@ -48,10 +48,13 @@ public class MessageHandler extends Thread {
         // copy destinations
         this.client.destinations = new ArrayList<Destination>();
         this.client.destinations.addAll(getInitDataResponseDto.destinations);
+
+        this.client.dataReceivedListener.onDataReceived();
     }
 
     private void handleOptimizationResponse(GetOptimizationResponseDto getOptimizationResponseDto) {
         this.client.studentToDestination = getOptimizationResponseDto.studentToDestination;
+        this.client.optimizationReceivedListener.onOptimizationReceived();
         // display studentToDestination
         DB db = Helpers.getDb();
 
