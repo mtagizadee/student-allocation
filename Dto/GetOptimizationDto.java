@@ -7,18 +7,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetOptimizationDto implements Serializable {
+public class GetOptimizationDto extends Dto implements Serializable {
     public final int studentId;
     public final int[] preferences;
-    public final Event event = Event.GetOptimization;
 
     public GetOptimizationDto(int studentId, int[] preferences) {
+        super(Event.GetOptimization);
+
         this.studentId = studentId;
         this.preferences = new int[preferences.length];
-        for (int i = 0; i < preferences.length; i++) {
-            System.out.println(preferences[i]);
-            this.preferences[i] = preferences[i];
-        }
+        for (int i = 0; i < preferences.length; i++) this.preferences[i] = preferences[i];
     }
 
     public String toString() {

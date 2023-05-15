@@ -6,12 +6,12 @@ import Entities.Student;
 import java.io.Serializable;
 import java.util.List;
 
-public class GetInitDataResponseDto implements Serializable {
+public class GetInitDataResponseDto extends Dto implements Serializable {
     public List<Student> students;
     public List<Destination> destinations;
-    public final Event event = Event.GetInitData;
 
     public GetInitDataResponseDto(List<Student> students, List<Destination> destinations) {
+        super(Event.GetInitData);
         this.destinations = destinations;
         this.students = students;
     }
