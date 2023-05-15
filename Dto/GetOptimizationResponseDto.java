@@ -1,14 +1,13 @@
 package Dto;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class GetOptimizationResponseDto implements Serializable {
-    public final int studentId;
-    public final int destinationId;
+    public final Map<Integer, Integer> studentToDestination;
     public Event event = Event.GetOptimization;
 
-    public GetOptimizationResponseDto(int studentId, int destinationId) {
-        this.studentId = studentId;
-        this.destinationId = destinationId;
+    public GetOptimizationResponseDto(Map<Integer, Integer> studentToDestination) {
+        this.studentToDestination = studentToDestination;
     }
 }

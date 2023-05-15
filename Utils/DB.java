@@ -32,42 +32,29 @@ public class DB {
     private void initStudents() { // init students with random preferences at the beginning
         for (int i = 0; i < this.STUDENTS_COUNT; i++) {
             Student student = new Student(i,"Entities.Student " + (i + 1));
-
-//            for (int j = 0; j < capacity; j++) {
-//                int randIndex = Helpers.rand(0, this.DESTINATIONS_COUNT - 1);
-//
-//                //check if user already has this destination in his preferences
-//                if (student.getPreferences().contains(this.destinations.get(randIndex))) {
-//                    j--;
-//                    continue;
-//                }
-//
-//                student.addPreference(this.destinations.get(randIndex));
-//            }
-
             this.students.add(student);
         }
     }
 
     public Student getStudent(int studentId) {
-        return this.students
-                .stream()
-                .findFirst()
-                .filter(student -> student.getId() == studentId)
-                .orElse(null);
+
+        for (Student student : this.students) {
+            if (student.getId() == studentId) {
+                return student;
+            }
+        }
+
+        return null;
     }
 
     public Destination getDestination(int destinationId) {
-        System.out.println(destinationId);
-        // display all destinations
         for (Destination destination : this.destinations) {
-            System.out.println(destination);
+            if (destination.getId() == destinationId) {
+                return destination;
+            }
         }
-        return this.destinations
-                .stream()
-                .findFirst()
-                .filter(destination -> destination.getId() == destinationId)
-                .orElse(null);
+
+        return null;
     }
 
 
@@ -99,6 +86,11 @@ public class DB {
 
     public void addStudentToOptimization(Student student) {
         this.studentsInOptimization.add(student);
+
+        //display students in optimization
+        for (Student studentInOptimization : this.studentsInOptimization) {
+            System.out.println(studentInOptimization);
+        }
     }
 
     public OptimizationData getOptimizationData() {

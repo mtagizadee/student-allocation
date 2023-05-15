@@ -5,10 +5,12 @@ import Dto.GetOptimizationResponseDto;
 import Entities.Destination;
 import Entities.Student;
 import Utils.Config;
+import Utils.DB;
 import Utils.Helpers;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageHandler extends Thread {
     private final Client client;
@@ -22,11 +24,11 @@ public class MessageHandler extends Thread {
     public void run() {
         while (true) {
             try {
-                Thread.sleep(Config.SLEEP_DELAY);
-
                 // if there is no message, continue.
                 if (this.socket.getInputStream().available() <= 0) continue;
                 Object dto = Helpers.receiveDto(this.socket);
+                System.out.println("Message is received from the server.");
+                System.out.println(dto);
 
                 if (dto instanceof GetInitDataResponseDto)
                     this.handleInitDataResponse((GetInitDataResponseDto) dto);
@@ -49,6 +51,13 @@ public class MessageHandler extends Thread {
     }
 
     private void handleOptimizationResponse(GetOptimizationResponseDto getOptimizationResponseDto) {
-        this.client.optimizedPreference = getOptimizationResponseDto.destinationId;
+        this.client.studentToDestination = getOptimizationResponseDto.studentToDestination;
+        // display studentToDestination
+        DB db = Helpers.getDb();
+
+        for (int studentId : this.client.studentToDestination.keySet()) {
+            System.out.println(db.getStudent(studentId));
+            System.out.println(db.getDestination(this.client.studentToDestination.get(studentId)));
+        }
     }
 }

@@ -28,7 +28,7 @@ public class Destination implements Serializable {
     }
 
     public String toString() {
-        return this.name + " --> " + this.capacity;
+        return this.name + " " +  this.id + " --> " + this.capacity;
     }
 
     public int getCapacity() {

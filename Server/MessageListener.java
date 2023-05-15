@@ -13,6 +13,9 @@ import Utils.OptimizationData;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MessageListener extends Thread {
     private final Server server;
@@ -28,7 +31,6 @@ public class MessageListener extends Thread {
         ArrayList<Destination> preferences = new ArrayList<Destination>();
 
         for (int i = 0; i < dto.preferences.length; i++) preferences.add(db.getDestination(dto.preferences[i]));
-        preferences.stream().forEach(System.out::println);
         student.setPreferences(preferences);
 
         // save student in the database for the next requests
@@ -50,10 +52,6 @@ public class MessageListener extends Thread {
                         // Receive the message.
                         GetOptimizationDto dto = (GetOptimizationDto) Helpers.receiveDto(client);
                         if (dto == null || dto.event != Event.GetOptimization) continue;
-
-                        // optimize the students preferences
-                        Student student = this.proceedDto(dto);
-                        System.out.println(student);
 
 //                        i = 0
 //                       [
@@ -82,15 +80,23 @@ public class MessageListener extends Thread {
 //                        1,
 //                        2,]
 //
+                        this.proceedDto(dto);
                         OptimizationData optimizationData = db.getOptimizationData();
-                        System.out.println(optimizationData);
                         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(optimizationData.studentToDestinationPreference, optimizationData.destinationToCapacity);
-//                        System.out.println(geneticAlgorithm.optimize());
+
+                        List<Integer> res = geneticAlgorithm.optimize();
+                        List<Student> reference = optimizationData.studentsReferences;
+                        List<Destination> destinationReference = db.getDestinations();
+
+                        Map<Integer, Integer> studentToDestination = new HashMap<Integer, Integer>();
+                        for (int i = 0; i < res.size(); i++) {
+                            System.out.println("Student " + reference.get(i).getId() + " is assigned to destination " + destinationReference.get(res.get(i)).getId());
+                            studentToDestination.put(reference.get(i).getId(), destinationReference.get(res.get(i)).getId());
+                        }
 
 
-//                        // Send the message to all clients
-//                        for (Socket otherClient : this.server.getClients())
-//                            Helpers.sendDto(otherClient, new GetOptimizationResponseDto(dto.studentId,  optimizedPreference.getId()));
+                        for (Socket otherClient : this.server.getClients())
+                            Helpers.sendDto(otherClient, new GetOptimizationResponseDto(studentToDestination));
                     }
                 }
             } catch (Exception e) {
