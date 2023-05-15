@@ -2,7 +2,7 @@ package Utils;
 
 import Entities.Destination;
 import Entities.Student;
-import GA.Population;
+import SampleGA.Population;
 
 import java.io.*;
 import java.net.Socket;

@@ -31,4 +31,7 @@ public class Destination implements Serializable {
         return this.name + " --> " + this.capacity;
     }
 
+    public int getCapacity() {
+        return this.capacity;
+    }
 }

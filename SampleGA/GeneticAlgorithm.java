@@ -1,4 +1,4 @@
-package GA;
+package SampleGA;
 
 import Entities.Destination;
 import Entities.Student;

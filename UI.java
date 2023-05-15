@@ -161,6 +161,10 @@ public class UI {
         SwingUtilities.invokeLater(() -> render());
     }
 
+    public String[] getPreferences() {
+        return (String[]) leftListModel.toArray();
+    }
+
     private void search() {
         String searchQuery = searchField.getText().toLowerCase();
         List<String> leftListItems = new ArrayList<>();

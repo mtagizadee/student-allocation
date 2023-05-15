@@ -3,17 +3,22 @@ package Dto;
 import Entities.Destination;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GetOptimizationDto implements Serializable {
     public final int studentId;
-    public final List<Integer> preferences;
+    public final int[] preferences;
     public final Event event = Event.GetOptimization;
 
-    public GetOptimizationDto(int studentId, ArrayList<Integer> preferences) {
+    public GetOptimizationDto(int studentId, int[] preferences) {
         this.studentId = studentId;
-        this.preferences = preferences;
+        this.preferences = new int[preferences.length];
+        for (int i = 0; i < preferences.length; i++) {
+            System.out.println(preferences[i]);
+            this.preferences[i] = preferences[i];
+        }
     }
 
     public String toString() {

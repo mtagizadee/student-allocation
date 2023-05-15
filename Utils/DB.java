@@ -9,6 +9,7 @@ import java.util.List;
 public class DB {
     private final int STUDENTS_COUNT = 40;
     private final int DESTINATIONS_COUNT = 10;
+    private final List<Student> studentsInOptimization;
 
     private final List<Student> students;
     private final List<Destination> destinations;
@@ -16,6 +17,7 @@ public class DB {
     public DB() {
         this.destinations = new ArrayList<Destination>(this.DESTINATIONS_COUNT);
         this.students = new ArrayList<Student>(this.STUDENTS_COUNT);
+        this.studentsInOptimization = new ArrayList<Student>();
 
         this.initDestinations();
         this.initStudents();
@@ -29,20 +31,19 @@ public class DB {
 
     private void initStudents() { // init students with random preferences at the beginning
         for (int i = 0; i < this.STUDENTS_COUNT; i++) {
-            int capacity = Helpers.rand(1, 5);
             Student student = new Student(i,"Entities.Student " + (i + 1));
 
-            for (int j = 0; j < capacity; j++) {
-                int randIndex = Helpers.rand(0, this.DESTINATIONS_COUNT - 1);
-
-                //check if user already has this destination in his preferences
-                if (student.getPreferences().contains(this.destinations.get(randIndex))) {
-                    j--;
-                    continue;
-                }
-
-                student.addPreference(this.destinations.get(randIndex));
-            }
+//            for (int j = 0; j < capacity; j++) {
+//                int randIndex = Helpers.rand(0, this.DESTINATIONS_COUNT - 1);
+//
+//                //check if user already has this destination in his preferences
+//                if (student.getPreferences().contains(this.destinations.get(randIndex))) {
+//                    j--;
+//                    continue;
+//                }
+//
+//                student.addPreference(this.destinations.get(randIndex));
+//            }
 
             this.students.add(student);
         }
@@ -57,6 +58,11 @@ public class DB {
     }
 
     public Destination getDestination(int destinationId) {
+        System.out.println(destinationId);
+        // display all destinations
+        for (Destination destination : this.destinations) {
+            System.out.println(destination);
+        }
         return this.destinations
                 .stream()
                 .findFirst()
@@ -89,6 +95,14 @@ public class DB {
                 break;
             }
         }
+    }
+
+    public void addStudentToOptimization(Student student) {
+        this.studentsInOptimization.add(student);
+    }
+
+    public OptimizationData getOptimizationData() {
+        return new OptimizationData(this.studentsInOptimization, this.destinations);
     }
 
     public void saveDestination(Destination destination) {

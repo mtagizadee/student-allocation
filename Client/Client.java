@@ -3,9 +3,13 @@ package Client;
 import Dto.GetOptimizationDto;
 import Entities.Destination;
 import Entities.Student;
+import Utils.DB;
 import Utils.Helpers;
+
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Client {
@@ -21,7 +25,15 @@ public class Client {
 
         try {
             this.socket = new Socket(addressToConnect, portToConnect);
+            DB db = Helpers.getDb();
+            List<Destination> destinations = db.getDestinations();
+            List<Student> students = db.getStudents();
 
+            Helpers.sendDto(this.socket, new GetOptimizationDto(students.get(0).getId(), new int[] {
+                    destinations.get(0).getId(),
+                    destinations.get(1).getId(),
+                    destinations.get(2).getId()
+            }));
             MessageHandler messageHandler = new MessageHandler(this.socket, this);
             messageHandler.start();
         } catch (Exception e) {
