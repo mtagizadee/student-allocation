@@ -1,12 +1,7 @@
 package Utils;
 
-import Entities.Destination;
-import Entities.Student;
-import SampleGA.Population;
-
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 import java.util.Random;
 
 public class Helpers {
@@ -50,21 +45,5 @@ public class Helpers {
 
     public static DB getDb() { // encapsulate Utils.DB
         return db;
-    }
-
-    public static Destination result(Population population, Student student) {
-        List<Destination> preferences = student.getPreferences();
-        for (Destination preference : preferences) {
-            if (!preference.isFull()) {
-                preference.addStudent();
-
-                // save destination in the database for the next requests
-                db.saveDestination(preference);
-
-                return preference;
-            }
-        }
-
-        return null;
     }
 }

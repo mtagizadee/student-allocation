@@ -29,7 +29,7 @@ public class Client {
             List<Destination> destinations = db.getDestinations();
             List<Student> students = db.getStudents();
 
-            Helpers.sendDto(this.socket, new GetOptimizationDto(students.get(1).getId(), new int[] {
+            Helpers.sendDto(this.socket, new GetOptimizationDto(students.get(10).getId(), new int[] {
                     destinations.get(0).getId(),
                     destinations.get(3).getId(),
                     destinations.get(4).getId()
