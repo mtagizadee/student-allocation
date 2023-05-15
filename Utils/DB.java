@@ -31,9 +31,10 @@ public class DB {
     }
 
     private void initStudents() { // init students with random preferences at the beginning
-        for (int i = 0; i < this.STUDENTS_COUNT; i++) {
-            Student student = new Student(i,"Entities.Student " + (i + 1));
-            this.students.add(student);
+        // add student with id 22022695
+        for (int i = 0; i < 40; i++) {
+            String studentId = "22022" + String.format("%03d", i + 1);
+            this.students.add(new Student(i, studentId));
         }
     }
 

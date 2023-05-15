@@ -25,7 +25,10 @@ public class ResultsScreen {
 
         frame2.getContentPane().add(panel);
 
-        frame2.setSize(300, 200);
+        frame2.setSize(300, 300);
+        frame2.setResizable(false);
+
+        frame2.setLocationRelativeTo(null);
         frame2.setVisible(true);
     }
 }

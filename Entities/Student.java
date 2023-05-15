@@ -28,6 +28,10 @@ public class Student implements Serializable {
         return this.studentId;
     }
 
+    public String getStudentId() {
+        return this.studentId;
+    }
+
     public int getId() {
         return this.id;
     }

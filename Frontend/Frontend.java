@@ -41,7 +41,8 @@ public class Frontend {
 
                     // combine the student and destination to a string and add it to the list.
                     assert destination != null;
-                    defaultListModel.addElement(student.toString() + " -> " + destination.toString());
+                    assert student != null;
+                    defaultListModel.addElement(student.toString() + " was allocated to " + destination.toString());
                 }
 
                 resultsScreen.setListModel(defaultListModel);
@@ -61,8 +62,14 @@ public class Frontend {
                 }
 
                 // find the student with the name of the entry.
-                Student student = client.students.stream().filter(s -> Objects.equals(s.toString(), ui.getStudentId())).findFirst().orElse(null);
-                client.sendGetOptimizationDto(new GetOptimizationDto(student.getId(), nPreferences));
+                for (Student student : client.students) {
+                    System.out.println(student.getStudentId());
+                    System.out.println(ui.getStudentId());
+                    if (student.getStudentId().equals(ui.getStudentId())) {
+                        client.sendGetOptimizationDto(new GetOptimizationDto(student.getId(), nPreferences));
+                        break;
+                    }
+                }
             });
 
             ui.render();
