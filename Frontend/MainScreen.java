@@ -1,8 +1,6 @@
 package Frontend;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -12,13 +10,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainScreen {
     private DefaultListModel<String> leftListModel = new DefaultListModel<>();
     private String studentId;
     private DefaultListModel<String> rightListModel = new DefaultListModel<>();
-    private JTextField searchField;
     private static final int MAX_ITEMS = 6;
     private SubmitPreferencesListener submitPreferencesListener;
 
@@ -160,37 +156,6 @@ public class MainScreen {
 
     public String[] getPreferences() {
         return (String[]) leftListModel.toArray();
-    }
-
-    private void search() {
-        String searchQuery = searchField.getText().toLowerCase();
-        List<String> leftListItems = new ArrayList<>();
-        List<String> rightListItems = new ArrayList<>();
-
-        for (int i = 0; i < leftListModel.size(); i++) {
-            leftListItems.add(leftListModel.get(i));
-        }
-        for (int i = 0; i < rightListModel.size(); i++) {
-            rightListItems.add(rightListModel.get(i));
-        }
-
-        List<String> filteredLeftListItems = leftListItems.stream()
-                .filter(item -> item.toLowerCase().contains(searchQuery))
-                .collect(Collectors.toList());
-
-        List<String> filteredRightListItems = rightListItems.stream()
-                .filter(item -> item.toLowerCase().contains(searchQuery))
-                .collect(Collectors.toList());
-
-        leftListModel.clear();
-        rightListModel.clear();
-
-        for (String item : filteredLeftListItems) {
-            leftListModel.addElement(item);
-        }
-        for (String item : filteredRightListItems) {
-            rightListModel.addElement(item);
-        }
     }
 
     private static class ListItemTransferHandler extends TransferHandler {
