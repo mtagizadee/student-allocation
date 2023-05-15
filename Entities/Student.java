@@ -6,35 +6,17 @@ import java.util.List;
 
 public class Student implements Serializable {
     private final int id;
-    private final String name;
+    private final String studentId;
     private final List<Destination> preferences;
 
-    public Student(int id, String name) {
+    public Student(int id, String studentId) {
         this.id = id;
-        this.name = name;
+        this.studentId = studentId;
         this.preferences = new ArrayList<Destination>();
     }
 
     public List<Destination> getPreferences() {
         return this.preferences;
-    }
-
-    public int isPreferred(Destination destination) {
-        int n = this.preferences.size();
-        for (int i = 0; i < n; i++) {
-            if (this.preferences.get(i).getId() == destination.getId()) return i;
-        }
-
-        return -1;
-    }
-
-    public int isPreferred(int destinationId) {
-        int n = this.preferences.size();
-        for (int i = 0; i < n; i++) {
-            if (this.preferences.get(i).getId() == destinationId) return i;
-        }
-
-        return -1;
     }
 
     public void setPreferences(List<Destination> preferences) {
@@ -43,15 +25,10 @@ public class Student implements Serializable {
     }
 
     public String toString() {
-        return this.name;
+        return this.studentId;
     }
 
     public int getId() {
         return this.id;
     }
-
-    public void addPreference(Destination destination) {
-        this.preferences.add(destination);
-    }
-
 }

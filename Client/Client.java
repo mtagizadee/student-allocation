@@ -4,10 +4,9 @@ import Dto.GetOptimizationDto;
 import Entities.Destination;
 import Entities.Student;
 import Utils.Config;
-import Utils.DB;
+
 import Utils.Helpers;
 
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
@@ -27,15 +26,6 @@ public class Client {
 
         try {
             this.socket = new Socket(addressToConnect, portToConnect);
-            DB db = Helpers.getDb();
-            List<Destination> destinations = db.getDestinations();
-            List<Student> students = db.getStudents();
-
-            Helpers.sendDto(this.socket, new GetOptimizationDto(students.get(10).getId(), new int[] {
-                    destinations.get(0).getId(),
-                    destinations.get(3).getId(),
-                    destinations.get(4).getId()
-            }));
             MessageHandler messageHandler = new MessageHandler(this.socket, this);
             messageHandler.start();
         } catch (Exception e) {

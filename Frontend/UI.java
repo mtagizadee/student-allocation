@@ -1,3 +1,7 @@
+package Frontend;
+
+import Dto.GetOptimizationDto;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -10,13 +14,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UI {
     private DefaultListModel<String> leftListModel = new DefaultListModel<>();
+    private String studentId;
     private DefaultListModel<String> rightListModel = new DefaultListModel<>();
     private JTextField searchField;
     private static final int MAX_ITEMS = 6;
+    private SubmitPreferencesListener submitPreferencesListener;
 
     public void setLeftListModel(List<String> leftListModel) {
         for (String item : leftListModel) {
@@ -30,6 +37,18 @@ public class UI {
         this.rightListModel.clear();
         for (String item : rightListModel)
             this.rightListModel.addElement(item);
+    }
+
+    public List<String> getRightListModel() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < rightListModel.size(); i++) {
+            list.add(rightListModel.get(i));
+        }
+        return list;
+    }
+
+    public String getStudentId() {
+        return studentId;
     }
 
     public void render() {
@@ -136,7 +155,9 @@ public class UI {
             if (rightListModel.size() < MAX_ITEMS) {
                 JOptionPane.showMessageDialog(null, "You must select at least 6 items");
             } else {
-                System.out.println("Submit");
+                String studentId = JOptionPane.showInputDialog("Enter student id");
+                this.studentId = studentId;
+                submitPreferencesListener.onSubmitPreferences();
             }
         });
         rightPanel.add(submitButton, BorderLayout.SOUTH);
@@ -161,6 +182,15 @@ public class UI {
 
     public void renderLater() {
         SwingUtilities.invokeLater(() -> render());
+    }
+
+    public void addOnSubmitListener(Runnable runner) {
+        submitPreferencesListener = new SubmitPreferencesListener() {
+            @Override
+            public void onSubmitPreferences() {
+                runner.run();
+            }
+        };
     }
 
     public String[] getPreferences() {

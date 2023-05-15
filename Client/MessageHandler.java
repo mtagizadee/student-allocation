@@ -58,7 +58,7 @@ public class MessageHandler extends Thread {
         // display studentToDestination
         DB db = Helpers.getDb();
 
-        for (int studentId : this.client.studentToDestination.keySet()) {
+        for (Integer studentId : this.client.studentToDestination.keySet()) {
             System.out.println(db.getStudent(studentId));
             System.out.println(db.getDestination(this.client.studentToDestination.get(studentId)));
         }
