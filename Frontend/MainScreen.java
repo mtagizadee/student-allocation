@@ -53,39 +53,9 @@ public class MainScreen {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BorderLayout());
 
-        // Part 1: Navbar
-        JToolBar navbar = new JToolBar();
-        navbar.setFloatable(false);
-        navbar.add(new JLabel("Student Name - Student Image"));
-        navbar.add(Box.createHorizontalGlue());
-        navbar.add(new JLabel("Beast App"));
-        frame.getContentPane().add(navbar, BorderLayout.NORTH);
-
         // Part 2: Bottom
         JPanel bottomPanel = new JPanel(new BorderLayout());
         frame.getContentPane().add(bottomPanel, BorderLayout.CENTER);
-
-        // Part 3: Search Input
-        searchField = new JTextField();
-        bottomPanel.add(searchField, BorderLayout.NORTH);
-
-        // Search functionality
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                search();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                search();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                search();
-            }
-        });
 
         // Part 5: First list
         JList<String> leftList = new JList<>(leftListModel);
@@ -103,8 +73,6 @@ public class MainScreen {
             }
         });
 
-        // Part 6: Second list
-        rightListModel = new DefaultListModel<>();
         JList<String> rightList = new JList<>(rightListModel);
         rightList.setDragEnabled(true);
         rightList.setDropMode(DropMode.INSERT);
