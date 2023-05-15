@@ -49,15 +49,6 @@ public class Client {
         }
     }
 
-    public static void main(String argv[]) {
-        try {
-            String serverAddress = InetAddress.getLocalHost().getHostAddress(); // <-- Change this to the server address if you want to connect to a remote server.
-            Client client = new Client(serverAddress, Config.PORT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addOnDataReceivedListener(Runnable runnable) {
         this.dataReceivedListener = new DataReceivedListener() {
             @Override

@@ -16,7 +16,7 @@ import javax.swing.*;
 
 public class Frontend {
     public static void main(String[] args) {
-        UI ui = new UI();
+        MainScreen ui = new MainScreen();
         ResultsScreen resultsScreen = new ResultsScreen();
 
 

@@ -53,33 +53,6 @@ public class MessageListener extends Thread {
                         GetOptimizationDto dto = (GetOptimizationDto) Helpers.receiveDto(client);
                         if (dto == null || dto.event != Event.GetOptimization) continue;
 
-//                        i = 0
-//                       [
-//                        [1, 2,6,7,4]
-//                        [1,2,3, 4, 5],
-//                        [1,2,3],
-//                                ]
-//
-//                        [
-//                                "student1",
-//                        "student5",
-//                        "student3",
-//                                ]
-//
-//                        [0, 2, 5, 4, ..., ]
-//
-//                         [
-//                        "dest1",
-//                                "dest2",
-//                                "dest3",
-//                        ...
-//                                ]
-//
-//                    [
-//                        1,
-//                        1,
-//                        2,]
-//
                         this.proceedDto(dto);
                         OptimizationData optimizationData = db.getOptimizationData();
                         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(optimizationData.studentToDestinationPreference, optimizationData.destinationToCapacity);
@@ -93,7 +66,6 @@ public class MessageListener extends Thread {
                             System.out.println("Student " + reference.get(i).getId() + " is assigned to destination " + destinationReference.get(res.get(i)).getId());
                             studentToDestination.put(reference.get(i).getId(), destinationReference.get(res.get(i)).getId());
                         }
-
 
                         for (Socket otherClient : this.server.getClients())
                             Helpers.sendDto(otherClient, new GetOptimizationResponseDto(studentToDestination));

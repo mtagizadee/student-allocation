@@ -1,7 +1,5 @@
 package Frontend;
 
-import Dto.GetOptimizationDto;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -14,10 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UI {
+public class MainScreen {
     private DefaultListModel<String> leftListModel = new DefaultListModel<>();
     private String studentId;
     private DefaultListModel<String> rightListModel = new DefaultListModel<>();
