@@ -13,7 +13,7 @@ public class ResultsScreen {
 
     public void render() {
         JFrame frame2 = new JFrame("Beast App");
-        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
 

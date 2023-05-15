@@ -1,8 +1,6 @@
 package Frontend;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -12,13 +10,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainScreen {
     private DefaultListModel<String> leftListModel = new DefaultListModel<>();
     private String studentId;
     private DefaultListModel<String> rightListModel = new DefaultListModel<>();
-    private JTextField searchField;
     private static final int MAX_ITEMS = 6;
     private SubmitPreferencesListener submitPreferencesListener;
 
@@ -53,39 +49,9 @@ public class MainScreen {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BorderLayout());
 
-        // Part 1: Navbar
-        JToolBar navbar = new JToolBar();
-        navbar.setFloatable(false);
-        navbar.add(new JLabel("Student Name - Student Image"));
-        navbar.add(Box.createHorizontalGlue());
-        navbar.add(new JLabel("Beast App"));
-        frame.getContentPane().add(navbar, BorderLayout.NORTH);
-
         // Part 2: Bottom
         JPanel bottomPanel = new JPanel(new BorderLayout());
         frame.getContentPane().add(bottomPanel, BorderLayout.CENTER);
-
-        // Part 3: Search Input
-        searchField = new JTextField();
-        bottomPanel.add(searchField, BorderLayout.NORTH);
-
-        // Search functionality
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                search();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                search();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                search();
-            }
-        });
 
         // Part 5: First list
         JList<String> leftList = new JList<>(leftListModel);
@@ -103,8 +69,6 @@ public class MainScreen {
             }
         });
 
-        // Part 6: Second list
-        rightListModel = new DefaultListModel<>();
         JList<String> rightList = new JList<>(rightListModel);
         rightList.setDragEnabled(true);
         rightList.setDropMode(DropMode.INSERT);
@@ -192,37 +156,6 @@ public class MainScreen {
 
     public String[] getPreferences() {
         return (String[]) leftListModel.toArray();
-    }
-
-    private void search() {
-        String searchQuery = searchField.getText().toLowerCase();
-        List<String> leftListItems = new ArrayList<>();
-        List<String> rightListItems = new ArrayList<>();
-
-        for (int i = 0; i < leftListModel.size(); i++) {
-            leftListItems.add(leftListModel.get(i));
-        }
-        for (int i = 0; i < rightListModel.size(); i++) {
-            rightListItems.add(rightListModel.get(i));
-        }
-
-        List<String> filteredLeftListItems = leftListItems.stream()
-                .filter(item -> item.toLowerCase().contains(searchQuery))
-                .collect(Collectors.toList());
-
-        List<String> filteredRightListItems = rightListItems.stream()
-                .filter(item -> item.toLowerCase().contains(searchQuery))
-                .collect(Collectors.toList());
-
-        leftListModel.clear();
-        rightListModel.clear();
-
-        for (String item : filteredLeftListItems) {
-            leftListModel.addElement(item);
-        }
-        for (String item : filteredRightListItems) {
-            rightListModel.addElement(item);
-        }
     }
 
     private static class ListItemTransferHandler extends TransferHandler {
